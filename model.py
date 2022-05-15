@@ -4,10 +4,17 @@ import math
 import numpy as np
 import seaborn as sns
 import warnings
+from tabulate import tabulate
+from contextlib import redirect_stdout
 
 warnings.filterwarnings("ignore")
 
 ROUNDING = 2
+ROUNDING_FORMAT = '.3f'
+RESOURCES = 'resources/'
+GRAPH_PATH = RESOURCES + 'graphs/'
+DATA_PATH = RESOURCES + 'data/'
+TABLES_PATH = RESOURCES + 'tables/'
 
 def determine_class_amount(data_set):
     return math.trunc(1+  math.log(len(data_set), 2)) 
@@ -15,6 +22,76 @@ def determine_class_amount(data_set):
 def determine_class_size(data_set, number_classes, min, max):
     range = max - min
     return round(range/number_classes, ROUNDING)
+
+def get_median(data_set):
+    lenght = len(data_set)
+
+    middle = int(math.trunc(lenght/2))
+
+    if lenght == 0:
+        return lenght
+    if lenght % 2 == 0:
+        return round((data_set[middle] + data_set[middle - 1]) / 2, ROUNDING)
+    else:
+        return round(data_set[middle], ROUNDING)
+
+def get_average(list):
+    if len(list) == 0: return 0
+    return round(sum(list)/len(list), ROUNDING)
+
+def most_frequent(List):
+    dict = {}
+    count, itm = 0, ''
+    for item in reversed(List):
+        dict[item] = dict.get(item, 0) + 1
+        if dict[item] >= count :
+            count, itm = dict[item], item
+    return(itm)
+ 
+    return num
+def create_tables(data_set, name, file_name):
+    with open(TABLES_PATH + file_name, 'w') as f:
+        with redirect_stdout(f):
+            print(name + '\n')
+            data_set.sort()
+            max_value = float(max(data_set))
+            min_value = float(min(data_set))
+            number_classes = determine_class_amount(data_set)
+            class_size = determine_class_size(data_set, number_classes, min_value, max_value)
+
+            entries = []
+            headers = ['Classes', 'Frequência', 'F-Relativa', 'Media','Mediana', 'Moda', '%', '% Acumulada']
+
+
+            freq = []
+            accumulated_percentage = 0
+            for i in range(number_classes):
+                freq.append([])
+                inferior = round(min_value + i*class_size, ROUNDING)
+                superior = round(inferior + class_size, ROUNDING)
+                class_range = (str(format(inferior, ROUNDING_FORMAT)) + "-|" + str(format(superior, ROUNDING_FORMAT)))
+                for entry in data_set:
+                    if inferior <= float(entry) < superior:
+                        freq[i].append(float(entry))
+
+                percentage = len(freq[i])/len(data_set)
+                accumulated_percentage += percentage
+                entries.append([
+                    class_range, # Classes
+                    len(freq[i]), # Frequencia
+                    round(len(freq[i])/len(data_set), ROUNDING), # Frequência Relativa
+                    get_average(freq[i]), # Media
+                    get_median(freq[i]), # Mediana
+                    most_frequent(freq[i]), # Moda
+                    round(percentage, ROUNDING), # Porcentagem
+                    round(accumulated_percentage, ROUNDING) # Porcentagem acumulada
+                    ])
+
+            print(tabulate(entries, headers=headers, numalign="center", stralign="center"))
+            print()
+            print(str(class_size) + " tamanho das classes")
+            print(str(number_classes) + " numero de classes")    
+            print(str(len(data_set)) + " tamanho da amostra\n")
 
 def create_hist(data_set, color, label):
     kwargs = dict(bins=determine_class_amount(data_set), color=color, label=label)
@@ -43,7 +120,7 @@ def save_graph(dataset1, dataset2, color1, color2, label1, label2, title, file_n
     create_hist(dataset2, color2, label2) 
 
     create_graph(title)
-    path = 'resources/' + file_name
+    path = GRAPH_PATH + file_name
     pyplot.savefig(path, )
 
     pyplot.figure().clear()
@@ -54,7 +131,7 @@ def save_graph(dataset1, dataset2, color1, color2, label1, label2, title, file_n
 # Dados obtidos em 
 # https://preco.anp.gov.br/
 # Referentes aos dados de 01-05-22 a 07-05-22
-file = open("anp-data.json")
+file = open(DATA_PATH + "anp-data.json")
 data = json.load(file)
 
 interior = []
@@ -96,5 +173,12 @@ save_graph(nacional, outras, "darkgreen", "orange", "Nacionais", "Outras", "SP3 
 
 save_graph(parana, sp3, "limegreen", "red", "Paraná", "São Paulo", "SP3 (cidades de N a V) x Paraná", "SP3-Parana")
 
+create_tables(parana, "Paraná - Preço da GA", "parana.txt")
+create_tables(sp3, "SP3 (cidades de N a V) - Preço da GA", "sp3.txt")
 
+create_tables(nacional, "SP3 (cidades de N a V) e Paraná - Bandeiras Nacionais", "bandeiras.txt")
+create_tables(outras, "SP3 (cidades de N a V) e Paraná - Outras Bandeiras", "bandeiras.txt")
+
+create_tables(interior, "SP3 (cidades de N a V) e Paraná - Interior", "interior.txt")
+create_tables(metropolis, "SP3 (cidades de N a V) e Paraná - Metrópolis", "metropolis.txt")
 # pyplot.show()
