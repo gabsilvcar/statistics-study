@@ -1,4 +1,3 @@
-# example of a bimodal data sample
 from matplotlib import pyplot
 import json 
 import math
@@ -10,31 +9,15 @@ warnings.filterwarnings("ignore")
 
 ROUNDING = 2
 
-def getMin(dataset1, dataset2):
-    min_value1 = float(min(dataset1))
-    min_value2 = float(min(dataset2))
-    return min(min_value1, min_value2)
-
-def getMax(dataset1, dataset2):
-    max_value1 = float(max(dataset1))
-    max_value2 = float(max(dataset2))
-    return max(max_value1, max_value2)
-
 def determine_class_amount(data_set):
-    return math.trunc(math.log(len(data_set), 2)) 
+    return math.trunc(1+  math.log(len(data_set), 2)) 
 
 def determine_class_size(data_set, number_classes, min, max):
     range = max - min
     return round(range/number_classes, ROUNDING)
-    
+
 def create_hist(data_set, color, label):
-    max_value = float(max(data_set))
-    min_value = float(min(data_set))
-
-    number_classes = determine_class_amount(data_set)
-    class_size = determine_class_size(data_set, number_classes, min_value, max_value)
-
-    kwargs = dict(bins=number_classes, color=color, label=label)
+    kwargs = dict(bins=determine_class_amount(data_set), color=color, label=label)
 
     sns.distplot(data_set, **kwargs)
 

@@ -9,6 +9,10 @@ This repository uses poetry for dependency management. Learn more in https://pyt
 
         poetry install
 
-<b>Execute:</b>
+<b>Create histograms:</b>
 
         poetry run python model.py
+
+<b>Create empirical model:</b>
+
+        poetry run python empirical_model.py
