@@ -229,8 +229,8 @@ save_graph(parana, sp3, "limegreen", "red", "Paraná", "São Paulo", "SP3 (cidad
 create_tables(parana, "Paraná - Preço da GA", "parana.txt")
 create_tables(sp3, "SP3 (cidades de N a V) - Preço da GA", "sp3.txt")
 
-create_tables(nacional, "SP3 (cidades de N a V) e Paraná - Bandeiras Nacionais", "bandeiras.txt")
-create_tables(outras, "SP3 (cidades de N a V) e Paraná - Outras Bandeiras", "bandeiras.txt")
+create_tables(nacional, "SP3 (cidades de N a V) e Paraná - Bandeiras Nacionais", "bandeiras-nacionais.txt")
+create_tables(outras, "SP3 (cidades de N a V) e Paraná - Outras Bandeiras", "outras-bandeiras.txt")
 
 create_tables(interior, "SP3 (cidades de N a V) e Paraná - Interior", "interior.txt")
 create_tables(metropolis, "SP3 (cidades de N a V) e Paraná - Metrópolis", "metropolis.txt")
