@@ -159,11 +159,11 @@ def create_graph(label):
     pyplot.ylim(0,2)
     pyplot.xlim(5,10)
     pyplot.legend();
-    pyplot.xticks(np.arange(5, 10, 0.25))
+    pyplot.xticks(np.arange(5, 10, 0.5))
     manager = pyplot.get_current_fig_manager()
     manager.window.showMaximized()
-    fig = pyplot.gcf()
-    fig.set_size_inches(18.5, 10.5)
+    # fig = pyplot.gcf()
+    # fig.set_size_inches(18.5, 10.5)
 
 def get_price(set): 
     return set['PRE_VENDA'].replace(",", ".")
