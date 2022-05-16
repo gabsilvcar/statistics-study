@@ -9,7 +9,7 @@ from contextlib import redirect_stdout
 
 warnings.filterwarnings("ignore")
 
-ROUNDING = 2
+ROUNDING = 3
 ROUNDING_FORMAT = '.3f'
 RESOURCES = 'resources/'
 GRAPH_PATH = RESOURCES + 'graphs/'
@@ -21,7 +21,7 @@ def determine_class_amount(data_set):
 
 def determine_class_size(data_set, number_classes, min, max):
     range = max - min
-    return round(range/number_classes, ROUNDING)
+    return range/number_classes
 
 def get_median(data_set):
     lenght = len(data_set)
@@ -108,8 +108,12 @@ def create_tables(data_set, name, file_name):
             for i in range(number_classes):
                 freq.append([])
                 inferior = min_value + i*class_size
-                superior = inferior + class_size
-                class_range = (str(format(inferior, ROUNDING_FORMAT)) + "-|" + str(format(superior, ROUNDING_FORMAT)))
+                if i == number_classes -1:
+                    superior = max_value + 0.001
+                else:
+                    superior = inferior + class_size
+                class_range = (str(format(inferior, ROUNDING_FORMAT)) + "|-" + str(format(superior, ROUNDING_FORMAT)))
+
                 for entry in data_set:
                     if inferior <= float(entry) < superior:
                         freq[i].append(float(entry))
