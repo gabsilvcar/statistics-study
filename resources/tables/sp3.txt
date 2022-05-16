@@ -12,7 +12,7 @@ SP3 (cidades de N a V) - Preço da GA
 8.437|-8.718       1           0.002       8.599     8.599    8.599        0              0               0                    0              0.002      0.992
 8.718|-9.000       4           0.008       8.999     8.999    8.999        0              0               0                    0              0.008        1
 
-0.2810000000000001 tamanho das classes
+0.281 tamanho das classes
 9 numero de classes
 498 tamanho da amostra
 

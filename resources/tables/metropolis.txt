@@ -11,7 +11,7 @@ SP3 (cidades de N a V) e Paraná - Metrópolis
 8.367|-8.683       3           0.013       8.466     8.399    8.399    0.013333        0.11547        0.066667               1.364            0.013      0.983
 8.683|-9.000       4           0.017       8.999     8.999    8.999        0              0               0                    0              0.017        1
 
-0.3161250000000001 tamanho das classes
+0.316 tamanho das classes
 8 numero de classes
 232 tamanho da amostra
 

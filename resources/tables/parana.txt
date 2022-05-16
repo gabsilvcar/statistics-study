@@ -12,7 +12,7 @@ Paraná - Preço da GA
 7.921|-8.110       1           0.004       8.099     8.099    8.099        0              0               0                    0              0.004      0.992
 8.110|-8.300       2           0.008       8.294     8.294     8.29     4.1e-05       0.006364         0.0045                0.077            0.008        1
 
-0.1888888888888888 tamanho das classes
+0.189 tamanho das classes
 9 numero de classes
 258 tamanho da amostra
 

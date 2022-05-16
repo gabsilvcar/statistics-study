@@ -142,7 +142,7 @@ def create_tables(data_set, name, file_name):
 
             print(tabulate(entries, headers=headers, numalign="center", stralign="center"))
             print()
-            print(str(class_size) + " tamanho das classes")
+            print(str(round(class_size, ROUNDING)) + " tamanho das classes")
             print(str(number_classes) + " numero de classes")    
             print(str(len(data_set)) + " tamanho da amostra\n")
 

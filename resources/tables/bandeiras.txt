@@ -12,7 +12,7 @@ SP3 (cidades de N a V) e Paraná - Outras Bandeiras
 7.975|-8.187       2           0.005       8.049     8.049    7.999      0.005        0.070711          0.05                 0.879            0.005      0.991
 8.187|-8.400       4           0.009       8.347     8.349    8.399    0.003654       0.060445        0.030222               0.724            0.009        1
 
-0.212111111111111 tamanho das classes
+0.212 tamanho das classes
 9 numero de classes
 441 tamanho da amostra
 
