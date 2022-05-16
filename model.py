@@ -31,13 +31,13 @@ def get_median(data_set):
     if lenght == 0:
         return lenght
     if lenght % 2 == 0:
-        return round((data_set[middle] + data_set[middle - 1]) / 2, ROUNDING)
+        return (data_set[middle] + data_set[middle - 1]) / 2
     else:
-        return round(data_set[middle], ROUNDING)
+        return data_set[middle]
 
 def get_average(list):
     if len(list) == 0: return 0
-    return round(sum(list)/len(list), ROUNDING)
+    return sum(list)/len(list)
 
 def most_frequent(List):
     dict = {}
@@ -48,7 +48,36 @@ def most_frequent(List):
             count, itm = dict[item], item
     return(itm)
  
-    return num
+def variance_sample(list):
+    n = len(list)
+    if n <= 1:
+        return 0
+    avg = get_average(list)
+    sigma = 0
+    for value in list:
+        sigma += (avg - value) ** 2
+    return (sigma/(n-1))
+
+def variance_population(list):
+    n = len(list)
+    if n <= 1:
+        return 0
+    avg = get_average(list)
+    sigma = 0
+    for value in list:
+        sigma += (avg - value) ** 2
+    return (sigma/n)
+
+def error_estimate(list, std_deviation):
+    n = len(list)
+    if n <= 1:
+        return 0
+    return std_deviation/math.sqrt(n)
+
+def coeff_variation(std_deviation, avg):
+    if (avg == 0): return 0
+    return std_deviation/avg * 100
+
 def create_tables(data_set, name, file_name):
     with open(TABLES_PATH + file_name, 'w') as f:
         with redirect_stdout(f):
@@ -60,8 +89,19 @@ def create_tables(data_set, name, file_name):
             class_size = determine_class_size(data_set, number_classes, min_value, max_value)
 
             entries = []
-            headers = ['Classes', 'Frequência', 'F-Relativa', 'Media','Mediana', 'Moda', '%', '% Acumulada']
-
+            headers = [
+                'Classes',
+                'Frequência',
+                'F-Relativa',
+                'Media',
+                'Mediana',
+                'Moda',
+                "Variância",
+                "Desvio Padrão",
+                "Erro Padrão",
+                "Coeficiente de Variação",
+                '%',
+                '% Acumulada']
 
             freq = []
             accumulated_percentage = 0
@@ -73,6 +113,11 @@ def create_tables(data_set, name, file_name):
                 for entry in data_set:
                     if inferior <= float(entry) < superior:
                         freq[i].append(float(entry))
+                
+                avg = get_average(freq[i])
+                variance = variance_sample(freq[i])
+                std_deviation = math.sqrt(variance)
+                error_estimative = error_estimate(freq[i], std_deviation)
 
                 percentage = len(freq[i])/len(data_set)
                 accumulated_percentage += percentage
@@ -80,9 +125,13 @@ def create_tables(data_set, name, file_name):
                     class_range, # Classes
                     len(freq[i]), # Frequencia
                     round(len(freq[i])/len(data_set), ROUNDING), # Frequência Relativa
-                    get_average(freq[i]), # Media
-                    get_median(freq[i]), # Mediana
+                    round(avg, ROUNDING), # Media
+                    round(get_median(freq[i]), ROUNDING), # Mediana
                     most_frequent(freq[i]), # Moda
+                    round(variance, ROUNDING*2), # Variancia
+                    round(std_deviation, ROUNDING*2), # Desvio Padrão
+                    round(error_estimative, ROUNDING*2), # Erro Padrão
+                    round(coeff_variation(std_deviation, avg), ROUNDING), # Coeficiente de Variação
                     round(percentage, ROUNDING), # Porcentagem
                     round(accumulated_percentage, ROUNDING) # Porcentagem acumulada
                     ])
