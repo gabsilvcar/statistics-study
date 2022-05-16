@@ -107,8 +107,8 @@ def create_tables(data_set, name, file_name):
             accumulated_percentage = 0
             for i in range(number_classes):
                 freq.append([])
-                inferior = round(min_value + i*class_size, ROUNDING)
-                superior = round(inferior + class_size, ROUNDING)
+                inferior = min_value + i*class_size
+                superior = inferior + class_size
                 class_range = (str(format(inferior, ROUNDING_FORMAT)) + "-|" + str(format(superior, ROUNDING_FORMAT)))
                 for entry in data_set:
                     if inferior <= float(entry) < superior:
