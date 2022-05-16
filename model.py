@@ -17,7 +17,7 @@ DATA_PATH = RESOURCES + 'data/'
 TABLES_PATH = RESOURCES + 'tables/'
 
 def determine_class_amount(data_set):
-    return math.trunc(1+  math.log(len(data_set), 2)) 
+    return 1+ round(math.log(len(data_set), 2))
 
 def determine_class_size(data_set, number_classes, min, max):
     range = max - min
