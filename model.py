@@ -1,3 +1,4 @@
+import random
 from matplotlib import pyplot
 import json 
 import math
@@ -6,7 +7,9 @@ import seaborn as sns
 import warnings
 from tabulate import tabulate
 from contextlib import redirect_stdout
-
+import pandas as pds
+import matplotlib.patheffects as path_effects
+import matplotlib.pyplot as plt
 warnings.filterwarnings("ignore")
 
 ROUNDING = 3
@@ -217,7 +220,7 @@ def create_graph(label):
 def get_price(set): 
     return float(set['PRE_VENDA'].replace(",", "."))
 
-def save_graph(dataset1, dataset2, color1, color2, label1, label2, title, file_name):
+def save_histogram(dataset1, dataset2, color1, color2, label1, label2, title, file_name):
     create_hist(dataset1, color1, label1) 
     create_hist(dataset2, color2, label2) 
 
@@ -229,6 +232,54 @@ def save_graph(dataset1, dataset2, color1, color2, label1, label2, title, file_n
     pyplot.close()
     pyplot.cla()
     pyplot.clf()
+
+def save_boxplot(dataset1, dataset2, color1, color2, label1, label2, title, file_name):
+
+        data = {
+        label1: dataset1,
+        label2: dataset2
+        }
+        df = pds.concat([pds.DataFrame(v, columns=[k]) for k, v in data.items()], axis=1)
+
+
+        
+    
+
+        sns.set_theme(style="whitegrid")
+
+        box_plot = sns.boxplot(data=df
+
+        )
+        add_median_labels(box_plot, ROUNDING_FORMAT)
+        path = GRAPH_PATH + "box/" +file_name
+
+        pyplot.savefig(path, )
+
+        pyplot.figure().clear()
+        pyplot.close()
+        pyplot.cla()
+        pyplot.clf()
+
+
+
+def add_median_labels(ax, fmt='.1f'):
+    lines = ax.get_lines()
+    boxes = [c for c in ax.get_children() if type(c).__name__ == 'PathPatch']
+    lines_per_box = int(len(lines) / len(boxes))
+    for median in lines[4:len(lines):lines_per_box]:
+        x, y = (data.mean() for data in median.get_data())
+        # choose value depending on horizontal or vertical plot orientation
+        value = x if (median.get_xdata()[1] - median.get_xdata()[0]) == 0 else y
+        text = ax.text(x, y, f'{value:{fmt}}', ha='center', va='center',
+                       fontweight='bold', color='white')
+        # create median-colored border around white text for contrast
+        text.set_path_effects([
+            path_effects.Stroke(linewidth=3, foreground=median.get_color()),
+            path_effects.Normal(),
+        ])
+def create_boxplot(data_set, color, label):
+
+    sns.boxplot(data_set)
 
 # Dados obtidos em 
 # https://preco.anp.gov.br/
@@ -269,11 +320,11 @@ outras.sort()
 parana.sort()
 sp3.sort()
 
-save_graph(interior, metropolis, "darkgreen", "dodgerblue", "Interior", "Metrópolis", "SP3 (cidades de N a V) e Paraná - Interior x Metrópolis", "Interior-Metropolis")
+save_histogram(interior, metropolis, "darkgreen", "dodgerblue", "Interior", "Metrópolis", "SP3 (cidades de N a V) e Paraná - Interior x Metrópolis", "Interior-Metropolis")
 
-save_graph(nacional, outras, "darkgreen", "orange", "Nacionais", "Outras", "SP3 (cidades de N a V) x Paraná - Bandeiras", "Bandeiras")
+save_histogram(nacional, outras, "darkgreen", "orange", "Nacionais", "Outras", "SP3 (cidades de N a V) x Paraná - Bandeiras", "Bandeiras")
 
-save_graph(parana, sp3, "limegreen", "red", "Paraná", "São Paulo", "SP3 (cidades de N a V) x Paraná", "SP3-Parana")
+save_histogram(parana, sp3, "limegreen", "red", "Paraná", "São Paulo", "SP3 (cidades de N a V) x Paraná", "SP3-Parana")
 
 descriptive = latex_converter(["Dados", "Média", "Mediana", "Moda", "Variância", "Desvio Padrão", "Erro Padrão", "Coef. Variação"])
 
@@ -288,3 +339,10 @@ descriptive = create_tables(interior, "SP3 (cidades de N a V) e Paraná - Interi
 descriptive = create_tables(metropolis, "SP3 (cidades de N a V) e Paraná - Metrópolis", "metropolis.txt", descriptive)
 # pyplot.show()
 descriptive = save_latex_table(descriptive, "descriptive", "descriptive/")
+
+save_boxplot(interior, metropolis, "darkgreen", "dodgerblue", "Interior", "Metrópolis", "SP3 (cidades de N a V) e Paraná - Interior x Metrópolis", "Interior-Metropolis")
+
+save_boxplot(nacional, outras, "darkgreen", "orange", "Nacionais", "Outras", "SP3 (cidades de N a V) x Paraná - Bandeiras", "Bandeiras")
+
+save_boxplot(parana, sp3, "limegreen", "red", "Paraná", "São Paulo", "SP3 (cidades de N a V) x Paraná", "SP3-Parana")
+
