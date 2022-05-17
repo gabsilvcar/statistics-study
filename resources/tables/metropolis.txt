@@ -16,6 +16,6 @@ SP3 (cidades de N a V) e Paraná - Metrópolis
 9 numero de classes
 232 tamanho da amostra
 
- Media    Mediana    Moda    Variância    Desvio Padrão    Erro Padrão    Coeficiente de Variação
--------  ---------  ------  -----------  ---------------  -------------  -------------------------
- 7.359     7.335     7.59      0.184          0.428           0.028                5.821
+ Media    Q1    Mediana    Q3     Moda    Variância    Desvio Padrão    Erro Padrão    Coeficiente de Variação
+-------  ----  ---------  -----  ------  -----------  ---------------  -------------  -------------------------
+ 7.359   7.09    7.335    7.599   7.59      0.184          0.428           0.028                5.821

@@ -40,6 +40,19 @@ def get_median(data_set):
     else:
         return data_set[middle]
 
+def get_Qx(data_set, x):
+    lenght = len(data_set)
+
+    qx = int(math.trunc(x*lenght/4))
+
+    if lenght == 0:
+        return lenght
+    if lenght % 2 == 0:
+        return (data_set[qx] + data_set[qx - 1]) / 2
+    else:
+        return data_set[qx]
+
+
 def get_average(list):
     if len(list) == 0: return 0
     return sum(list)/len(list)
@@ -121,7 +134,9 @@ def create_tables(data_set, name, file_name, descriptive):
             entries_descriptive = []
             headers_descriptive = [
                 'Media',
+                'Q1',
                 'Mediana',
+                'Q3',
                 'Moda',
                 "Variância",
                 "Desvio Padrão",
@@ -163,7 +178,9 @@ def create_tables(data_set, name, file_name, descriptive):
 
             built_descriptive_entries = [
                     round(avg, ROUNDING), # Media
+                    round(get_Qx(data_set,1), ROUNDING), #Q1
                     round(get_median(data_set), ROUNDING), # Mediana
+                    round(get_Qx(data_set,3), ROUNDING), #Q3
                     most_frequent(data_set), # Moda
                     round(variance, ROUNDING), # Variancia
                     round(std_deviation, ROUNDING), # Desvio Padrão

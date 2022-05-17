@@ -17,6 +17,6 @@ SP3 (cidades de N a V) - Preço da GA
 10 numero de classes
 498 tamanho da amostra
 
- Media    Mediana    Moda    Variância    Desvio Padrão    Erro Padrão    Coeficiente de Variação
--------  ---------  ------  -----------  ---------------  -------------  -------------------------
- 7.162     7.099    7.099      0.126          0.355           0.016                4.952
+ Media    Q1    Mediana    Q3     Moda    Variância    Desvio Padrão    Erro Padrão    Coeficiente de Variação
+-------  ----  ---------  -----  ------  -----------  ---------------  -------------  -------------------------
+ 7.162   6.94    7.099    7.299  7.099      0.126          0.355           0.016                4.952
