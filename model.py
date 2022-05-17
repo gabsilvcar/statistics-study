@@ -11,10 +11,12 @@ warnings.filterwarnings("ignore")
 
 ROUNDING = 3
 ROUNDING_FORMAT = '.3f'
+
 RESOURCES = 'resources/'
 GRAPH_PATH = RESOURCES + 'graphs/'
 DATA_PATH = RESOURCES + 'data/'
 TABLES_PATH = RESOURCES + 'tables/'
+LATEX_PATH = RESOURCES + 'latex/'
 
 def determine_class_amount(data_set):
     return 1+ round(math.log(len(data_set), 2))
@@ -78,7 +80,25 @@ def coeff_variation(std_deviation, avg):
     if (avg == 0): return 0
     return std_deviation/avg * 100
 
-def create_tables(data_set, name, file_name):
+def latex_converter(entries):
+    tex = ""
+    i = 0
+    for entry in entries:
+        i += 1
+        tex += str(entry)
+        if not (i == len(entries)):
+            tex += ' & '
+        else:
+            tex += '\\' + '\\' + '\n'
+    return tex 
+
+def save_latex_table(tex_table, file_name, subfolder):
+    text_file = open(LATEX_PATH + subfolder + file_name, "w")
+    n = text_file.write(tex_table)
+    text_file.close()
+
+def create_tables(data_set, name, file_name, descriptive):
+    empirical = latex_converter(["Classe", "Frequência", "F-Relativa", "%", "% Acumulada"])
     with open(TABLES_PATH + file_name, 'w') as f:
         with redirect_stdout(f):
             print(name + '\n')
@@ -88,11 +108,15 @@ def create_tables(data_set, name, file_name):
             number_classes = determine_class_amount(data_set)
             class_size = determine_class_size(data_set, number_classes, min_value, max_value)
 
-            entries = []
-            headers = [
+            entries_empirical = []
+            headers_empirical = [
                 'Classes',
                 'Frequência',
                 'F-Relativa',
+                '%',
+                '% Acumulada']
+            entries_descriptive = []
+            headers_descriptive = [
                 'Media',
                 'Mediana',
                 'Moda',
@@ -100,8 +124,7 @@ def create_tables(data_set, name, file_name):
                 "Desvio Padrão",
                 "Erro Padrão",
                 "Coeficiente de Variação",
-                '%',
-                '% Acumulada']
+            ]
 
             freq = []
             accumulated_percentage = 0
@@ -117,34 +140,60 @@ def create_tables(data_set, name, file_name):
                 for entry in data_set:
                     if inferior <= float(entry) < superior:
                         freq[i].append(float(entry))
-                
-                avg = get_average(freq[i])
-                variance = variance_sample(freq[i])
-                std_deviation = math.sqrt(variance)
-                error_estimative = error_estimate(freq[i], std_deviation)
 
                 percentage = len(freq[i])/len(data_set)
                 accumulated_percentage += percentage
-                entries.append([
+                entries_empirical.append([
                     class_range, # Classes
                     len(freq[i]), # Frequencia
                     round(len(freq[i])/len(data_set), ROUNDING), # Frequência Relativa
-                    round(avg, ROUNDING), # Media
-                    round(get_median(freq[i]), ROUNDING), # Mediana
-                    most_frequent(freq[i]), # Moda
-                    round(variance, ROUNDING*2), # Variancia
-                    round(std_deviation, ROUNDING*2), # Desvio Padrão
-                    round(error_estimative, ROUNDING*2), # Erro Padrão
-                    round(coeff_variation(std_deviation, avg), ROUNDING), # Coeficiente de Variação
                     round(percentage, ROUNDING), # Porcentagem
                     round(accumulated_percentage, ROUNDING) # Porcentagem acumulada
                     ])
+                empirical += latex_converter([class_range, len(freq[i]), round(len(freq[i])/len(data_set), ROUNDING), round(percentage, ROUNDING), round(accumulated_percentage, ROUNDING)])
+                
 
-            print(tabulate(entries, headers=headers, numalign="center", stralign="center"))
+            avg = get_average(data_set)
+            variance = variance_sample(data_set)
+            std_deviation = math.sqrt(variance)
+            error_estimative = error_estimate(data_set, std_deviation)
+
+            built_descriptive_entries = [
+                    round(avg, ROUNDING), # Media
+                    round(get_median(data_set), ROUNDING), # Mediana
+                    most_frequent(data_set), # Moda
+                    round(variance, ROUNDING), # Variancia
+                    round(std_deviation, ROUNDING), # Desvio Padrão
+                    round(error_estimative, ROUNDING), # Erro Padrão
+                    round(coeff_variation(std_deviation, avg), ROUNDING), # Coeficiente de Variação
+            ]
+
+            built_descriptive = [
+                    file_name.replace(".txt", ""),
+                    round(avg, ROUNDING), # Media
+                    round(get_median(data_set), ROUNDING), # Mediana
+                    most_frequent(data_set), # Moda
+                    round(variance, ROUNDING), # Variancia
+                    round(std_deviation, ROUNDING), # Desvio Padrão
+                    round(error_estimative, ROUNDING), # Erro Padrão
+                    round(coeff_variation(std_deviation, avg), ROUNDING), # Coeficiente de Variação
+            ]
+
+            entries_descriptive.append(built_descriptive_entries)
+            descriptive += latex_converter(built_descriptive)
+
+            print(tabulate(entries_empirical, headers=headers_empirical, numalign="center", stralign="center"))
             print()
             print(str(round(class_size, ROUNDING)) + " tamanho das classes")
             print(str(number_classes) + " numero de classes")    
             print(str(len(data_set)) + " tamanho da amostra\n")
+            print(tabulate(entries_descriptive, headers=headers_descriptive, numalign="center", stralign="center"))
+
+            save_latex_table(empirical, file_name, "empirical/")
+
+            return descriptive
+
+
 
 def create_hist(data_set, color, label):
     kwargs = dict(bins=determine_class_amount(data_set), color=color, label=label)
@@ -166,7 +215,7 @@ def create_graph(label):
     # fig.set_size_inches(18.5, 10.5)
 
 def get_price(set): 
-    return set['PRE_VENDA'].replace(",", ".")
+    return float(set['PRE_VENDA'].replace(",", "."))
 
 def save_graph(dataset1, dataset2, color1, color2, label1, label2, title, file_name):
     create_hist(dataset1, color1, label1) 
@@ -226,12 +275,16 @@ save_graph(nacional, outras, "darkgreen", "orange", "Nacionais", "Outras", "SP3 
 
 save_graph(parana, sp3, "limegreen", "red", "Paraná", "São Paulo", "SP3 (cidades de N a V) x Paraná", "SP3-Parana")
 
-create_tables(parana, "Paraná - Preço da GA", "parana.txt")
-create_tables(sp3, "SP3 (cidades de N a V) - Preço da GA", "sp3.txt")
+descriptive = latex_converter(["Dados", "Média", "Mediana", "Moda", "Variância", "Desvio Padrão", "Erro Padrão", "Coef. Variação"])
 
-create_tables(nacional, "SP3 (cidades de N a V) e Paraná - Bandeiras Nacionais", "bandeiras-nacionais.txt")
-create_tables(outras, "SP3 (cidades de N a V) e Paraná - Outras Bandeiras", "outras-bandeiras.txt")
 
-create_tables(interior, "SP3 (cidades de N a V) e Paraná - Interior", "interior.txt")
-create_tables(metropolis, "SP3 (cidades de N a V) e Paraná - Metrópolis", "metropolis.txt")
+descriptive = create_tables(parana, "Paraná - Preço da GA", "parana.txt", descriptive)
+descriptive = create_tables(sp3, "SP3 (cidades de N a V) - Preço da GA", "sp3.txt", descriptive)
+
+descriptive = create_tables(nacional, "SP3 (cidades de N a V) e Paraná - Bandeiras Nacionais", "bandeiras-nacionais.txt", descriptive)
+descriptive = create_tables(outras, "SP3 (cidades de N a V) e Paraná - Outras Bandeiras", "outras-bandeiras.txt",descriptive)
+
+descriptive = create_tables(interior, "SP3 (cidades de N a V) e Paraná - Interior", "interior.txt", descriptive)
+descriptive = create_tables(metropolis, "SP3 (cidades de N a V) e Paraná - Metrópolis", "metropolis.txt", descriptive)
 # pyplot.show()
+descriptive = save_latex_table(descriptive, "descriptive", "descriptive/")
