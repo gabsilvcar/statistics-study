@@ -16,6 +16,6 @@ SP3 (cidades de N a V) e Paraná - Bandeiras Nacionais
 9 numero de classes
 315 tamanho da amostra
 
- Media    Q1     Mediana    Q3    Moda    Variância    Desvio Padrão    Erro Padrão    Coeficiente de Variação
--------  -----  ---------  ----  ------  -----------  ---------------  -------------  -------------------------
- 7.355   7.099    7.299    7.56  7.199      0.115          0.34            0.019                4.618
+ Media    Q1     Mediana    Q3    L Inferior    L Superior    Moda    Variância    Desvio Padrão    Erro Padrão    Coeficiente de Variação
+-------  -----  ---------  ----  ------------  ------------  ------  -----------  ---------------  -------------  -------------------------
+ 7.355   7.099    7.099    7.56     6.408         8.251      7.199      0.115          0.34            0.019                4.618

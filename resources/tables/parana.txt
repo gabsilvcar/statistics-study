@@ -16,6 +16,6 @@ Paraná - Preço da GA
 9 numero de classes
 258 tamanho da amostra
 
- Media    Q1    Mediana    Q3     Moda    Variância    Desvio Padrão    Erro Padrão    Coeficiente de Variação
--------  ----  ---------  -----  ------  -----------  ---------------  -------------  -------------------------
- 7.393   7.29    7.399    7.555   7.59      0.053          0.23            0.014                3.116
+ Media    Q1    Mediana    Q3     L Inferior    L Superior    Moda    Variância    Desvio Padrão    Erro Padrão    Coeficiente de Variação
+-------  ----  ---------  -----  ------------  ------------  ------  -----------  ---------------  -------------  -------------------------
+ 7.393   7.29    7.29     7.555     6.893         7.952       7.59      0.053          0.23            0.014                3.116

@@ -137,6 +137,8 @@ def create_tables(data_set, name, file_name, descriptive):
                 'Q1',
                 'Mediana',
                 'Q3',
+                'L Inferior',
+                'L Superior',
                 'Moda',
                 "Variância",
                 "Desvio Padrão",
@@ -175,12 +177,16 @@ def create_tables(data_set, name, file_name, descriptive):
             variance = variance_sample(data_set)
             std_deviation = math.sqrt(variance)
             error_estimative = error_estimate(data_set, std_deviation)
-
+            q1 = get_Qx(data_set,1)
+            q3 = get_Qx(data_set,3)
+            alc_q1_q3 = (q3 - q1)
             built_descriptive_entries = [
                     round(avg, ROUNDING), # Media
                     round(get_Qx(data_set,1), ROUNDING), #Q1
-                    round(get_median(data_set), ROUNDING), # Mediana
-                    round(get_Qx(data_set,3), ROUNDING), #Q3
+                    round(q1, ROUNDING), # Mediana
+                    round(q3, ROUNDING), #Q3
+                    round(q1 - 1.5*alc_q1_q3, ROUNDING), #LimiteInferior
+                    round(q3 + 1.5*alc_q1_q3, ROUNDING), #LimiteSuperior
                     most_frequent(data_set), # Moda
                     round(variance, ROUNDING), # Variancia
                     round(std_deviation, ROUNDING), # Desvio Padrão
