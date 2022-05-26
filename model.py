@@ -21,7 +21,7 @@ DATA_PATH = RESOURCES + 'data/'
 TABLES_PATH = RESOURCES + 'tables/'
 LATEX_PATH = RESOURCES + 'latex/'
 BOX_PATH = GRAPH_PATH + 'box/'
-DIST_PATH = GRAPH_PATH + 'dist/'
+DIST_PATH = GRAPH_PATH + 'dis/'
 
 def determine_class_amount(data_set):
     return 1+ round(math.log(len(data_set), 2))
