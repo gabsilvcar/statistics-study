@@ -128,16 +128,16 @@ def add_median_labels(ax, fmt='.1f'):
         ])
 
 def save_dist(df, x, file_name):
-    # sns.set_theme(style="whitegrid")
+    sns.set_theme(style="whitegrid")
 
     sns.displot(df, x="PRE_VENDA", hue="ESTADO", col=x)
    
     path = DIST_PATH + file_name
     pyplot.savefig(path, )
     pyplot.figure().clear()
-    pyplot.close()
-    pyplot.cla()
-    pyplot.clf()
+    # pyplot.close()
+    # pyplot.cla()
+    # pyplot.clf()
 
 def create_graphs(df, x, file_name):
     save_boxplot(df, x, file_name)
