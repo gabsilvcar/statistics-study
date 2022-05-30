@@ -10,93 +10,30 @@ from contextlib import redirect_stdout
 import pandas as pds
 import matplotlib.patheffects as path_effects
 import matplotlib.pyplot as plt
+
 warnings.filterwarnings("ignore")
 
 ROUNDING = 3
 ROUNDING_FORMAT = '.3f'
 
 RESOURCES = 'resources/'
-GRAPH_PATH = RESOURCES + 'graphs/'
+
 DATA_PATH = RESOURCES + 'data/'
-TABLES_PATH = RESOURCES + 'tables/'
+
 LATEX_PATH = RESOURCES + 'latex/'
+DESC_TEX_PATH = LATEX_PATH + 'dsc/'
+
+GRAPH_PATH = RESOURCES + 'graphs/'
 BOX_PATH = GRAPH_PATH + 'box/'
 DIST_PATH = GRAPH_PATH + 'dis/'
+DSCB_PATH = GRAPH_PATH + 'dsc/'
 
 def determine_class_amount(data_set):
     return 1+ round(math.log(len(data_set), 2))
 
-def determine_class_size(data_set, number_classes, min, max):
+def determine_class_size(number_classes, min, max):
     range = max - min
     return range/number_classes
-
-def get_median(data_set):
-    lenght = len(data_set)
-
-    middle = int(math.trunc(lenght/2))
-
-    if lenght == 0:
-        return lenght
-    if lenght % 2 == 0:
-        return (data_set[middle] + data_set[middle - 1]) / 2
-    else:
-        return data_set[middle]
-
-def get_Qx(data_set, x):
-    lenght = len(data_set)
-
-    qx = int(math.trunc(x*lenght/4))
-
-    if lenght == 0:
-        return lenght
-    if lenght % 2 == 0:
-        return (data_set[qx] + data_set[qx - 1]) / 2
-    else:
-        return data_set[qx]
-
-
-def get_average(list):
-    if len(list) == 0: return 0
-    return sum(list)/len(list)
-
-def most_frequent(List):
-    dict = {}
-    count, itm = 0, ''
-    for item in reversed(List):
-        dict[item] = dict.get(item, 0) + 1
-        if dict[item] >= count :
-            count, itm = dict[item], item
-    return(itm)
- 
-def variance_sample(list):
-    n = len(list)
-    if n <= 1:
-        return 0
-    avg = get_average(list)
-    sigma = 0
-    for value in list:
-        sigma += (avg - value) ** 2
-    return (sigma/(n-1))
-
-def variance_population(list):
-    n = len(list)
-    if n <= 1:
-        return 0
-    avg = get_average(list)
-    sigma = 0
-    for value in list:
-        sigma += (avg - value) ** 2
-    return (sigma/n)
-
-def error_estimate(list, std_deviation):
-    n = len(list)
-    if n <= 1:
-        return 0
-    return std_deviation/math.sqrt(n)
-
-def coeff_variation(std_deviation, avg):
-    if (avg == 0): return 0
-    return std_deviation/avg * 100
 
 def save_boxplot(df, x, file_name):
     sns.set_theme(style="whitegrid")
@@ -107,9 +44,6 @@ def save_boxplot(df, x, file_name):
     path = BOX_PATH + file_name
     pyplot.savefig(path, )
     pyplot.figure().clear()
-    pyplot.close()
-    pyplot.cla()
-    pyplot.clf()
 
 def add_median_labels(ax, fmt='.1f'):
     lines = ax.get_lines()
@@ -130,27 +64,42 @@ def add_median_labels(ax, fmt='.1f'):
 def save_dist(df, x, file_name):
     sns.set_theme(style="whitegrid")
 
-    sns.displot(df, x="PRE_VENDA", hue="ESTADO", col=x)
-   
+    sns.displot(df, x="PRE_VENDA", hue="ESTADO", col=x, kde=True)
+
     path = DIST_PATH + file_name
     pyplot.savefig(path, )
     pyplot.figure().clear()
-    # pyplot.close()
-    # pyplot.cla()
-    # pyplot.clf()
+
+def save_describe(df):
+    sp = df[df.ESTADO=='SP']
+    pr = df[df.ESTADO == 'PR']
+
+    bandeiras_SP = sp.PRE_VENDA[sp.BANDEIRA == "NACIONAIS"].describe().to_latex() + "\n" + sp.PRE_VENDA[sp.BANDEIRA == "OUTRAS"].describe().to_latex()
+    bandeiras_PR = pr.PRE_VENDA[pr.BANDEIRA == "NACIONAIS"].describe().to_latex() + "\n" + pr.PRE_VENDA[pr.BANDEIRA == "OUTRAS"].describe().to_latex()
+    save_txt(bandeiras_SP+bandeiras_PR, DESC_TEX_PATH+"Bandeira.tex")
+
+    regioes_SP = sp.PRE_VENDA[sp.REGIÃO == "Interior"].describe().to_latex() + "\n" + sp.PRE_VENDA[sp.REGIÃO == "Metropolitana"].describe().to_latex()
+    regioes_PR = pr.PRE_VENDA[pr.REGIÃO == "Interior"].describe().to_latex() + "\n" + pr.PRE_VENDA[pr.REGIÃO == "Metropolitana"].describe().to_latex()
+    save_txt(regioes_SP+regioes_PR, DESC_TEX_PATH+"Região.tex")
+
+    estados = sp.PRE_VENDA.describe().to_latex() + "\n" + pr.PRE_VENDA.describe().to_latex()
+    save_txt(estados, DESC_TEX_PATH+"Estados.tex")
+
+def save_txt(txt, path):
+    f = open(path, "w")
+    f.write(txt)
+    f.close()
 
 def create_graphs(df, x, file_name):
     save_boxplot(df, x, file_name)
     save_dist(df, x, file_name)
 
-# Dados obtidos em 
-# https://preco.anp.gov.br/
-# Referentes aos dados de 01-05-22 a 07-05-22
-# file = open(DATA_PATH + "anp-data.json")
-# data = json.load(file)
-
+# Dados obtidos em https://preco.anp.gov.br/
+# Referentes ao período de 01-05-22 a 07-05-22
 df = pds.read_json(DATA_PATH + "anp-data.json")
 
 create_graphs(df, "BANDEIRA", "Bandeira")
 create_graphs(df, "REGIÃO", "Região")
 create_graphs(df, "ESTADO", "Estados")
+
+save_describe(df)
