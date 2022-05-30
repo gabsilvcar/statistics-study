@@ -64,7 +64,7 @@ def add_median_labels(ax, fmt='.1f'):
 def save_dist(df, x, file_name):
     sns.set_theme(style="whitegrid")
 
-    sns.displot(df, x="PRE_VENDA", hue="ESTADO", col=x, kde=True)
+    sns.displot(df, x="PRE_VENDA", hue="ESTADO", col=x, kde=True, bins="sturges")
 
     path = DIST_PATH + file_name
     pyplot.savefig(path, )
